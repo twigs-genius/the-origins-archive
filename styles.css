@@ -170,6 +170,14 @@ h2 {
   letter-spacing: 0.08em;
 }
 
+.file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .icon-button:hover,
 .header-button:hover,
 .primary-button:hover,
@@ -531,7 +539,7 @@ textarea:focus {
   }
 
   .header-button {
-    flex: 1 1 calc(50% - 5px);
+    flex: 1 1 calc(33.333% - 7px);
     height: 48px;
     padding: 0 10px;
   }
@@ -656,5 +664,9 @@ textarea:focus {
 
   .stats-grid {
     grid-template-columns: 1fr;
+  }
+
+  .header-button {
+    flex-basis: 100%;
   }
 }

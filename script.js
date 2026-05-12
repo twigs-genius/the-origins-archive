@@ -72,6 +72,48 @@ document.querySelector("#markdownBtn").addEventListener("click", () => {
   downloadFile("极权主义的起源-阅读笔记.md", buildMarkdown(), "text/markdown;charset=utf-8");
 });
 
+document.querySelector("#importBtn").addEventListener("click", () => {
+  document.querySelector("#importFile").click();
+});
+
+document.querySelector("#importFile").addEventListener("change", async (event) => {
+  const file = event.target.files?.[0];
+  event.target.value = "";
+  if (!file) return;
+
+  try {
+    const backup = JSON.parse(await file.text());
+    const importedEntries = normalizeImportedEntries(backup);
+    const importedBookNotes = typeof backup.bookNotes === "string" ? backup.bookNotes.trim() : "";
+
+    if (!importedEntries.length && !importedBookNotes) {
+      window.alert("这个文件里没有可导入的阅读记录。");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `将导入 ${importedEntries.length} 条记录。同一天的记录会使用备份文件中的版本覆盖。继续吗？`
+    );
+    if (!confirmed) return;
+
+    const existingDates = new Set(entries.map((entry) => entry.date));
+    const overwrittenCount = importedEntries.filter((entry) => existingDates.has(entry.date)).length;
+    const addedCount = importedEntries.length - overwrittenCount;
+    entries = mergeEntries(entries, importedEntries);
+    saveEntries();
+
+    if (importedBookNotes) {
+      bookNotes.value = importedBookNotes;
+      localStorage.setItem(NOTES_KEY, importedBookNotes);
+    }
+
+    render();
+    window.alert(`导入完成：新增 ${addedCount} 条，覆盖 ${overwrittenCount} 条，当前共有 ${entries.length} 条记录。`);
+  } catch {
+    window.alert("导入失败：请选择由本页面导出的 JSON 备份文件。");
+  }
+});
+
 document.querySelector("#clearBtn").addEventListener("click", () => {
   const confirmed = window.confirm("确定清空所有每日记录吗？整本书档案不会被清空。");
   if (!confirmed) return;
@@ -98,6 +140,30 @@ function loadEntries() {
 
 function saveEntries() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+}
+
+function normalizeImportedEntries(backup) {
+  const rawEntries = Array.isArray(backup) ? backup : backup.entries;
+  if (!Array.isArray(rawEntries)) return [];
+
+  return rawEntries
+    .filter((entry) => entry && typeof entry === "object" && typeof entry.date === "string")
+    .map((entry) => {
+      const normalized = {};
+      [...Object.keys(fields), "questions", "reflection", "quotes", "pages", "minutes"].forEach((key) => {
+        normalized[key] = typeof entry[key] === "string" ? entry[key] : "";
+      });
+      normalized.date = entry.date;
+      return normalized;
+    });
+}
+
+function mergeEntries(currentEntries, importedEntries) {
+  const byDate = new Map(currentEntries.map((entry) => [entry.date, entry]));
+  importedEntries.forEach((entry) => {
+    byDate.set(entry.date, entry);
+  });
+  return Array.from(byDate.values()).sort((a, b) => b.date.localeCompare(a.date));
 }
 
 function render() {
