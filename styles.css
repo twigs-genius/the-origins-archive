@@ -147,11 +147,14 @@ h2 {
 
 .header-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
+  justify-content: flex-end;
 }
 
+.header-button,
 .icon-button {
-  width: 44px;
+  min-width: 44px;
   height: 44px;
   border: 1px solid rgba(217, 181, 109, 0.42);
   color: var(--ink);
@@ -159,7 +162,16 @@ h2 {
   cursor: pointer;
 }
 
+.header-button {
+  padding: 0 14px;
+  color: var(--gold);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+}
+
 .icon-button:hover,
+.header-button:hover,
 .primary-button:hover,
 .prompt:hover {
   border-color: var(--gold);
@@ -515,10 +527,17 @@ textarea:focus {
 
   .header-actions {
     width: 100%;
-    justify-content: space-between;
+    justify-content: stretch;
+  }
+
+  .header-button {
+    flex: 1 1 calc(50% - 5px);
+    height: 48px;
+    padding: 0 10px;
   }
 
   .icon-button {
+    flex: 0 0 48px;
     width: 48px;
     height: 48px;
   }

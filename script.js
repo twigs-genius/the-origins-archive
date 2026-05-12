@@ -65,15 +65,11 @@ document.querySelector("#exportBtn").addEventListener("click", () => {
     bookNotes: bookNotes.value,
     entries,
   };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], {
-    type: "application/json;charset=utf-8",
-  });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "极权主义的起源-阅读笔记.json";
-  link.click();
-  URL.revokeObjectURL(url);
+  downloadFile("极权主义的起源-阅读笔记备份.json", JSON.stringify(payload, null, 2), "application/json;charset=utf-8");
+});
+
+document.querySelector("#markdownBtn").addEventListener("click", () => {
+  downloadFile("极权主义的起源-阅读笔记.md", buildMarkdown(), "text/markdown;charset=utf-8");
 });
 
 document.querySelector("#clearBtn").addEventListener("click", () => {
@@ -193,6 +189,52 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+function downloadFile(filename, content, type) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function buildMarkdown() {
+  const lines = [
+    "# 《极权主义的起源》阅读笔记",
+    "",
+    `导出时间：${new Date().toLocaleString("zh-CN")}`,
+    "",
+  ];
+
+  if (bookNotes.value.trim()) {
+    lines.push("## 本书档案", "", bookNotes.value.trim(), "");
+  }
+
+  if (!entries.length) {
+    lines.push("## 每日记录", "", "尚未保存记录。");
+    return lines.join("\n");
+  }
+
+  lines.push("## 每日记录", "");
+  entries.forEach((entry) => {
+    lines.push(`### ${entry.date} · ${entry.range || "未填写阅读位置"}`, "");
+    if (entry.summary) lines.push("**今日核心摘要**", "", entry.summary, "");
+    if (entry.tags) lines.push("**概念、人物与线索**", "", entry.tags, "");
+
+    getQuestionPairs(entry)
+      .filter((item) => item.question || item.answer)
+      .forEach((item, index) => {
+        lines.push(`**问题 ${index + 1}**`, "", item.question || "未填写问题。", "");
+        if (item.answer) lines.push(`**解释 ${index + 1}**`, "", item.answer, "");
+      });
+
+    lines.push("---", "");
+  });
+
+  return lines.join("\n");
 }
 
 function drawStarfield() {
