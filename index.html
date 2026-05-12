@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>《极权主义的起源》阅读笔记本</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <canvas id="starfield" aria-hidden="true"></canvas>
+    <div class="page-shell">
+      <header class="book-header">
+        <div class="book-mark">
+          <span></span>
+        </div>
+        <div>
+          <p class="kicker">ORBITAL READING LEDGER</p>
+          <h1>极权主义的起源</h1>
+          <p class="subtitle">汉娜·阿伦特 / 每日阅读、提问与理解记录</p>
+        </div>
+        <div class="header-actions">
+          <button class="icon-button" id="exportBtn" title="导出笔记" aria-label="导出笔记">⇩</button>
+          <button class="icon-button danger" id="clearBtn" title="清空全部记录" aria-label="清空全部记录">⌫</button>
+        </div>
+      </header>
+
+      <main class="notebook-grid">
+        <section class="panel entry-panel" aria-labelledby="entryTitle">
+          <div class="section-heading">
+            <p>今日记录</p>
+            <h2 id="entryTitle">阅读仪式</h2>
+          </div>
+
+          <form id="entryForm" class="entry-form">
+            <label>
+              日期
+              <input type="date" id="date" required />
+            </label>
+            <label>
+              阅读位置
+              <input type="text" id="range" placeholder="例如：第一部第二章 / p. 41-63" />
+            </label>
+            <label class="full">
+              今日核心摘要
+              <textarea id="summary" rows="4" placeholder="今天这部分主要讲了什么？哪些句子改变了你的理解？"></textarea>
+            </label>
+            <label class="full">
+              概念、人物与线索
+              <input type="text" id="tags" placeholder="反犹主义、帝国主义、民族国家、孤独、宣传" />
+            </label>
+            <div class="full dialogue-board" aria-label="三个问题与解释">
+              <article class="question-bubble">
+                <label>
+                  问题一
+                  <textarea id="question1" rows="3" placeholder="向文本提出第一个问题。"></textarea>
+                </label>
+                <label>
+                  解释一
+                  <textarea id="answer1" rows="4" placeholder="把你和我讨论后的解释、反驳或暂时结论写在这里。"></textarea>
+                </label>
+              </article>
+              <article class="question-bubble">
+                <label>
+                  问题二
+                  <textarea id="question2" rows="3" placeholder="向作者的论证提出第二个问题。"></textarea>
+                </label>
+                <label>
+                  解释二
+                  <textarea id="answer2" rows="4" placeholder="记录讨论之后更清楚的地方，也可以保留疑点。"></textarea>
+                </label>
+              </article>
+              <article class="question-bubble">
+                <label>
+                  问题三
+                  <textarea id="question3" rows="3" placeholder="把文本和现实、经验或其他书连接起来。"></textarea>
+                </label>
+                <label>
+                  解释三
+                  <textarea id="answer3" rows="4" placeholder="写下这次问题把你带到哪里。"></textarea>
+                </label>
+              </article>
+            </div>
+            <button class="primary-button" type="submit">保存今日记录</button>
+          </form>
+        </section>
+
+        <aside class="side-column">
+          <section class="panel stats-panel" aria-labelledby="statsTitle">
+            <div class="section-heading">
+              <p>累计统计</p>
+              <h2 id="statsTitle">星图索引</h2>
+            </div>
+            <div class="stats-grid">
+              <div>
+                <span id="dayCount">0</span>
+                <p>记录天数</p>
+              </div>
+              <div>
+                <span id="entryCount">0</span>
+                <p>记录条目</p>
+              </div>
+              <div>
+                <span id="questionCount">0</span>
+                <p>问题数量</p>
+              </div>
+              <div>
+                <span id="conceptCount">0</span>
+                <p>概念线索</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel canon-panel" aria-labelledby="canonTitle">
+            <div class="section-heading">
+              <p>本书档案</p>
+              <h2 id="canonTitle">阅读誓词</h2>
+            </div>
+            <textarea id="bookNotes" rows="8" placeholder="记录你对整本书的总判断：主题、结构、关键命题、你与阿伦特的分歧。"></textarea>
+          </section>
+
+          <section class="panel prompts-panel" aria-labelledby="promptsTitle">
+            <div class="section-heading">
+              <p>提问模板</p>
+              <h2 id="promptsTitle">三重审问</h2>
+            </div>
+            <button class="prompt" type="button" data-target="question1" data-prompt="理解型：阿伦特在这一节真正要区分的概念是什么？">理解型</button>
+            <button class="prompt" type="button" data-target="question2" data-prompt="分析型：她的论证依赖哪些历史材料？有没有跳跃？">分析型</button>
+            <button class="prompt" type="button" data-target="question3" data-prompt="联结型：这一章如何解释今天的政治、组织或个人处境？">联结型</button>
+          </section>
+        </aside>
+
+        <section class="panel archive-panel" aria-labelledby="archiveTitle">
+          <div class="section-heading">
+            <p>历史记录</p>
+            <h2 id="archiveTitle">每日铭文</h2>
+          </div>
+          <div id="entries" class="entries empty">
+            <p>尚未保存记录。今天可以成为第一块碑文。</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
